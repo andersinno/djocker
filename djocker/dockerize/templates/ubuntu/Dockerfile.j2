@@ -1,0 +1,59 @@
+FROM {{ base_image }}
+
+# Ensure that Python outputs everything that's printed inside
+# the application rather than buffering it.
+ENV PYTHONUNBUFFERED 1
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Make a place to put all of the code
+RUN mkdir /code
+WORKDIR /code
+{% for source in apt_data.sources %}
+RUN echo {{ source }} >> /etc/apt/sources.list
+{% endfor %}
+{% for key in apt_data.deb_keys %}
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys {{ key }}
+{% endfor %}
+
+# Install the appropriate Ubuntu packages
+RUN apt-get update && apt-get install -y \
+{% for package in apt_data.requirements %}
+{% if not loop.last %}
+    {{ package }} \
+{% else %}
+    {{ package }}
+{% endif %}
+{% endfor %}
+
+# Add proper UTF-8 support
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+# Upgrade pip
+RUN {{ python.interpreter }} -m {{ python.pip }} install -U pip
+
+# Install application server
+{% if application_server == 'gunicorn' %}
+RUN {{ python.interpreter }} -m {{ python.pip }} install --no-cache-dir gunicorn
+{% elif application_server == 'uwsgi' %}
+RUN {{ python.interpreter }} -m {{ python.pip }} install --no-cache-dir uwsgi
+{% endif %}
+
+# Install python dependencies
+{% for file in requirement_files %}
+ADD {{ file }} /code/
+{% endfor %}
+
+{% for file in requirement_files %}
+RUN {{ python.interpreter }} -m {{ python.pip }} install --no-cache-dir -r {{ file }}
+{% endfor %}
+
+ENTRYPOINT ["/code/docker-entrypoint.sh"]
+{% if application_server == 'gunicorn' %}
+CMD ["gunicorn", "{{ wsgi_dot_path }}:application", "--bind 0.0.0.0:80", "--workers 3"]
+{% elif application_server == 'uwsgi' %}
+CMD ["uwsgi", "-http :80", "--wsgi-file {{ wsgi_dot_path }}", "--master", "--processes 2", "--threads 2"]
+{% endif %}

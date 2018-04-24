@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    image: {{ db_image }}
+    restart: always
+    environment:
+{% for key, value in db_env_vars.items() %}
+       {{ key }}: {{ value }}
+{% endfor %}
+    volumes:
+      - db_data:{{ db_volume_path }}
+    expose:
+      - "{{ db_port }}"
+{% if cache_image %}
+  cache:
+    image: {{ cache_image }}
+    restart: always
+    expose:
+      - "{{ cache_port }}"
+{% endif %}
+  api:
+    build: .
+    command: python{{ python_version }} /code/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=1
+      - DATABASE_URL={{ db_type }}://root:root@db/application
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+    db_data:
+

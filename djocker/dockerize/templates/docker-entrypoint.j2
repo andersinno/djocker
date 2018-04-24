@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+until nc -z -v -w30 "db" {{ db_port }}
+do
+  echo "Waiting for database connection..."
+  sleep 1
+done
+
+>&2 echo "Database is up - continuing"
+
+if [ "x$DJANGO_MANAGE_MIGRATE" = 'xon' ]; then
+    python{{ python_version }} manage.py migrate --noinput
+fi
+
+if [ "x$DJANGO_MANAGE_COLLECTSTATIC" = 'xon' ]; then
+    python{{ python_version }} manage.py collectstatic --noinput
+fi
+
+exec "$@"

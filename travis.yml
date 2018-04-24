@@ -1,0 +1,16 @@
+sudo: false
+language: python
+cache: pip
+
+matrix:
+  include:
+    - {env: TOXENV=style, python: "3.6"}
+    - python: "3.6"
+    - python: "3.5"
+    - python: "3.4"
+
+install:
+  - pip install tox-travis
+  - pip install -U pip setuptools
+
+script: tox -v
