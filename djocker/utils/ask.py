@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from .colors import color, Colors
+from .colors import Colors, color
 
 
 class ValidationError(Exception):

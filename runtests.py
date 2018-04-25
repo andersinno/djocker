@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import sys
-
-import py
 from os import path
+
 import django
+import py
 from django.conf import settings
 
 module_root = path.dirname(path.realpath(__file__))

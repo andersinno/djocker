@@ -9,8 +9,8 @@ from djocker.dockerize.handlers.compose import ComposeHandler
 from djocker.dockerize.handlers.entrypoint import EntrypointHandler
 from djocker.dockerize.handlers.ubuntu import UbuntuHandler
 from djocker.utils import cli
-from djocker.utils.ask import ask, ValidationError
-from djocker.utils.colors import color, Colors
+from djocker.utils.ask import ValidationError, ask
+from djocker.utils.colors import Colors, color
 from djocker.utils.docker_index import DockerIndex
 from djocker.utils.file import find_filename
 

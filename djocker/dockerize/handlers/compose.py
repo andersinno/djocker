@@ -1,8 +1,11 @@
-from djocker.dockerize.handlers.base import (
-    BaseHandler
+from djocker.dockerize.handlers.base import BaseHandler
+from djocker.dockerize.utils.constants import (
+    CACHE_DEFAULT_PORT,
+    DATABASE_DEFAULT_CREDENTIALS,
+    DATABASE_DEFAULT_PORT,
+    DATABASE_ENV_VARS,
+    DATABASE_VOLUME_PATH,
 )
-from djocker.dockerize.utils.constants import DATABASE_ENV_VARS, DATABASE_DEFAULT_PORT, DATABASE_VOLUME_PATH, \
-    CACHE_DEFAULT_PORT, DATABASE_DEFAULT_CREDENTIALS
 
 
 class ComposeHandler(BaseHandler):

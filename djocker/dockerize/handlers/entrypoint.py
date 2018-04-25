@@ -1,6 +1,4 @@
-from djocker.dockerize.handlers.base import (
-    BaseHandler
-)
+from djocker.dockerize.handlers.base import BaseHandler
 from djocker.dockerize.utils.constants import DATABASE_DEFAULT_PORT
 
 

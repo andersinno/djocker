@@ -1,8 +1,6 @@
 import os
 
-from djocker.dockerize.handlers.base import (
-    BaseHandler, HandlerException
-)
+from djocker.dockerize.handlers.base import BaseHandler, HandlerException
 
 apt_package_requirements = {
     'mysqlclient': ['libmysqlclient-dev'],
