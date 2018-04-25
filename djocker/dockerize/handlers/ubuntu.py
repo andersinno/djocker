@@ -32,13 +32,13 @@ python_version_support = {
             'deb_sign_keys': ['F23C5A6CF475977595C89F51BA6932366A755776'],
             'packages': ['python3.4'],
             'interpreter': 'python3.4',
-            'pip': 'pip3',
+            'pip': 'pip',
         },
         '3.5': {
             'default': False,
             'packages': ['python3.5', 'python3-dev', 'python3-pip'],
             'interpreter': 'python3.5',
-            'pip': 'pip3',
+            'pip': 'pip',
         },
         '3.6': {
             'default': False,
@@ -49,7 +49,7 @@ python_version_support = {
             'deb_sign_keys': ['F23C5A6CF475977595C89F51BA6932366A755776'],
             'packages': ['python3.6'],
             'interpreter': 'python3.6',
-            'pip': 'pip3',
+            'pip': 'pip',
         }
     },
 }
