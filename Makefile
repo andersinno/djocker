@@ -9,5 +9,8 @@ build:
 upload:
 	twine upload dist/*
 
+uploadtest:
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
 clean:
 	rm -fr dist build *.egg-info .tox
