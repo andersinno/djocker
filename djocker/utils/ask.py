@@ -1,15 +1,15 @@
 from collections import OrderedDict
 
-from .colors import color, colors
+from .colors import color, Colors
 
 
 class ValidationError(Exception):
     pass
 
 
-def ask(question, default=None, choices=None, validator=None, newline=True):
+def ask(question, default=None, choices=None, validator=None, newline=True):  # noqa: C901
     options = {'question': question,
-               'default': '' if not default else '[{}]'.format(color(default, colors.BOLD))}
+               'default': '' if not default else '[{}]'.format(color(default, Colors.BOLD))}
 
     choices_has_mapping = isinstance(choices, dict) or isinstance(choices, OrderedDict)
     if choices_has_mapping:
@@ -20,9 +20,9 @@ def ask(question, default=None, choices=None, validator=None, newline=True):
         choices_string = '\n'
         if default:
             default_index = str(choices.index(default))
-            options['default'] = '[{} ({})]'.format(default, color(default_index, colors.BOLD))
+            options['default'] = '[{} ({})]'.format(default, color(default_index, Colors.BOLD))
         for index, choice in enumerate(choices):
-            choices_string += '{} : {}\n'.format(color(index, colors.BOLD), choice)
+            choices_string += '{} : {}\n'.format(color(index, Colors.BOLD), choice)
 
     options['choices'] = '' if not choices else choices_string
 
@@ -61,12 +61,11 @@ def ask(question, default=None, choices=None, validator=None, newline=True):
     else:
         response_value = response
 
-
     if validator:
         try:
             validator.validate(response_value)
         except ValidationError as e:
-            print(color(str(e), colors.FAIL))
+            print(color(str(e), Colors.FAIL))
             return ask(question, default, choices, validator)
 
     return response_value

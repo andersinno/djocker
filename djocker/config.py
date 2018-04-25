@@ -21,6 +21,7 @@ def get_config_parser():
 
     return parser
 
+
 def get_djocker_config():
     djocker_config = default_config_values()
     parser = get_config_parser()

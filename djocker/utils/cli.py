@@ -1,5 +1,6 @@
-import sys
 import argparse
+import sys
+
 
 class Command:
     def __init__(self):
@@ -16,6 +17,7 @@ class Command:
 
     def handle(self):
         raise NotImplementedError()
+
 
 def run_command(cmd):
     cmd().handle()

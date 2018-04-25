@@ -7,6 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 class HandlerException(Exception):
     pass
 
+
 class BaseHandler:
     template_file = None
     out_file = None

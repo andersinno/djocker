@@ -10,7 +10,7 @@ from djocker.dockerize.handlers.entrypoint import EntrypointHandler
 from djocker.dockerize.handlers.ubuntu import UbuntuHandler
 from djocker.utils import cli
 from djocker.utils.ask import ask, ValidationError
-from djocker.utils.colors import color, colors
+from djocker.utils.colors import color, Colors
 from djocker.utils.docker_index import DockerIndex
 from djocker.utils.file import find_filename
 
@@ -53,17 +53,17 @@ def get_database_type(django_settings):
     print("\nChecking for databases in settings... ", end="", flush=True)
 
     if num_databases > 1:
-        print(color("mutiple database setups", colors.WARNING))
+        print(color("mutiple database setups", Colors.WARNING))
         return None
 
     default_database = django_databases['default']['ENGINE']
     database_engine = default_database.split('.')[-1]
     database_type = database_mapping.get(database_engine)
     if not database_type:
-        print(color("no auto setup support for {}".format(database_engine), colors.WARNING))
+        print(color("no auto setup support for {}".format(database_engine), Colors.WARNING))
         return None
 
-    print(color("found {}".format(database_type), colors.OKGREEN))
+    print(color("found {}".format(database_type), Colors.OKGREEN))
     return database_type
 
 
@@ -75,7 +75,7 @@ def get_cache_type(django_settings):
 
     cache_type = None
     if not num_caches or num_caches > 1:
-        print(color("mutiple cache setups", colors.WARNING))
+        print(color("mutiple cache setups", Colors.WARNING))
         return None
 
     default_cache = caches_setting['default']['BACKEND']
@@ -84,7 +84,7 @@ def get_cache_type(django_settings):
             cache_type = supported_cache
 
     if not cache_type:
-        print(color("no auto setup support for {}".format(default_cache), colors.WARNING))
+        print(color("no auto setup support for {}".format(default_cache), Colors.WARNING))
         return None
 
     return cache_type
@@ -127,8 +127,8 @@ class Dockerize(cli.Command):
 
     def print_logo(self):
         print("""
-        ___           _             _         
-       /   \___   ___| | _____ _ __(_)_______ 
+        ___           _             _
+       /   \___   ___| | _____ _ __(_)_______
       / /\ / _ \ / __| |/ / _ \ '__| |_  / _ \\
      / /_// (_) | (__|   <  __/ |  | |/ /  __/
     /___,' \___/ \___|_|\_\___|_|  |_/___\___|
@@ -147,7 +147,7 @@ class Dockerize(cli.Command):
                 self.django_settings = django_settings
                 self.django_settings_path = django_settings_path
                 print("Using Django settings: ", end="", flush=True)
-                print(color("{}\n".format(django_settings_path), colors.OKGREEN))
+                print(color("{}\n".format(django_settings_path), Colors.OKGREEN))
             except ImportError as e:
                 print(e)
                 self.django_available = None
@@ -165,18 +165,18 @@ class Dockerize(cli.Command):
             base_dir = getattr(self.django_settings, 'BASE_DIR', None)
         if not base_dir:
             print(
-                color('Could not find BASE_DIR in Django settings, some features might not be enabled.', colors.WARNING)
+                color('Could not find BASE_DIR in Django settings, some features might not be enabled.', Colors.WARNING)
             )
             base_dir = current_work_dir
         else:
             if not isinstance(base_dir, str):
                 print(
-                    color('The BASE_DIR variable must be a string, some features might not be enabled.', colors.WARNING)
+                    color('The BASE_DIR variable must be a string, some features might not be enabled.', Colors.WARNING)
                 )
                 base_dir = current_work_dir
 
         print(
-            color('Will be using {} for storing Docker files'.format(base_dir), colors.HEADER)
+            color('Will be using {} for storing Docker files'.format(base_dir), Colors.HEADER)
         )
         return base_dir
 
@@ -187,7 +187,7 @@ class Dockerize(cli.Command):
             validator=DockerImageValidator(),
             newline=False
         )
-        print('Using docker image: {}'.format(color(docker_image, colors.HEADER)))
+        print('Using docker image: {}'.format(color(docker_image, Colors.HEADER)))
         operating_system = docker_image.split(':')[0]
 
         return docker_image, operating_system
@@ -275,21 +275,21 @@ class Dockerize(cli.Command):
         versioned_docker_image = "{}:{}".format(docker_image, cache_version)
         if cache_image_flavor:
             versioned_docker_image = "{}-{}".format(versioned_docker_image, cache_image_flavor)
-        print('Using docker image: {}'.format(color(versioned_docker_image, colors.HEADER)))
+        print('Using docker image: {}'.format(color(versioned_docker_image, Colors.HEADER)))
 
         return versioned_docker_image
 
     def _get_requirements_files(self, base_dir):
         print("\nChecking for requirements files... ", end="", flush=True)
         if not base_dir:
-            print(color("skipping due to no base dir", colors.WARNING))
+            print(color("skipping due to no base dir", Colors.WARNING))
             return None
 
         requirements_re = re.compile('requirements.*\.txt')
         root_files = os.listdir(base_dir)
         requirements_files = [root_file for root_file in root_files if requirements_re.match(root_file)]
         requirements_files_string = ', '.join(requirements_files)
-        print("{}".format(color(requirements_files_string, colors.HEADER)))
+        print("{}".format(color(requirements_files_string, Colors.HEADER)))
         return requirements_files
 
     def _get_python_version(self):
@@ -344,7 +344,6 @@ class Dockerize(cli.Command):
         # Create module path
         return str(relative_path).replace('/', '.').replace('.py', '')
 
-
     def handle(self, *args, **options):
         config = DockerizeConfig()
         config.base_dir = self._get_basedir()
@@ -354,7 +353,7 @@ class Dockerize(cli.Command):
         if config.operating_system not in list(OS_IMAGE_HANDLERS.keys()):
             print(
                 color("Sorry, 'dockerize' does not currently support '{}' as a base OS".format(config.operating_system),
-                      colors.FAIL))
+                      Colors.FAIL))
             sys.exit(1)
         os_image_handler = OS_IMAGE_HANDLERS[config.operating_system]
 
@@ -370,13 +369,12 @@ class Dockerize(cli.Command):
         config.wsgi_dot_path = self._get_relative_dotted_path(config.wsgi_path, config.base_dir)
         config.application_server = self._get_application_server()
 
-        print(color("\nSetting up docker environment", colors.OKGREEN))
-        print(color("--------------------------------\n", colors.OKGREEN))
+        print(color("\nSetting up docker environment", Colors.OKGREEN))
+        print(color("--------------------------------\n", Colors.OKGREEN))
 
         os_image_handler(config).handle()
         EntrypointHandler(config).handle()
         ComposeHandler(config).handle()
-
 
 
 if __name__ == "__main__":

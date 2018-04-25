@@ -74,7 +74,7 @@ class UbuntuHandler(BaseHandler):
 
         if self.config.python_version not in python_version_support[ubuntu_version]:
             raise HandlerException('Version {} of Python is currently not supported by Ubuntu {}'
-                                         .format(self.config.python_version, ubuntu_version))
+                                   .format(self.config.python_version, ubuntu_version))
 
     def _get_apt_data(self):
         if not self.config.requirement_files:
@@ -109,7 +109,6 @@ class UbuntuHandler(BaseHandler):
             'deb_keys': deb_sign_keys,
         }
         return apt_data
-
 
     def handle(self):
         self._validate()

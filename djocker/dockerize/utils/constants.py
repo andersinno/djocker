@@ -30,4 +30,3 @@ DATABASE_VOLUME_PATH = {
     "mysql": "/var/lib/mysql",
     "postgres": "/var/lib/postgresql",
 }
-
