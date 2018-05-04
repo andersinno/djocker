@@ -388,8 +388,10 @@ class Dockerize(cli.Command):
         print(color("\nSetting up docker environment", Colors.OKGREEN))
         print(color("--------------------------------\n", Colors.OKGREEN))
 
-        os_image_handler(config).handle()
-        EntrypointHandler(config).handle()
+        os_image_handler.config = config
+        os_image_handler.handle()
+        if self.django_available:
+            EntrypointHandler(config).handle()
         ComposeHandler(config).handle()
 
 
