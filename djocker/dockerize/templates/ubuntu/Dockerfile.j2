@@ -8,6 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Make a place to put all of the code
 RUN mkdir /code
+RUN mkdir /entrypoint
 WORKDIR /code
 
 # Install the appropriate Ubuntu packages
@@ -46,7 +47,11 @@ RUN {{ python.interpreter }} -m {{ python.pip }} install --no-cache-dir
  -r {{ file }}
 {%- endfor %}
 
-ENTRYPOINT ["/code/docker-entrypoint.sh"]
+# Add entrypoint and make executable
+ADD docker-entrypoint.sh /entrypoint/
+RUN chmod +x /entrypoint/docker-entrypoint.sh
+
+ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 {% if application_server == 'gunicorn' %}
 CMD ["gunicorn", "{{ wsgi_dot_path }}:application", "--bind 0.0.0.0:80", "--workers 3"]
 {% elif application_server == 'uwsgi' %}
