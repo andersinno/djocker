@@ -1,5 +1,4 @@
 import os
-import stat
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -35,8 +34,6 @@ class BaseHandler:
         write_data = self.build_template(data)
         with open(file_path, 'w+') as file:
             file.write(write_data)
-            if executable:
-                os.fchmod(file.fileno(), stat.S_IXOTH)
 
     def handle(self):
         raise NotImplementedError
