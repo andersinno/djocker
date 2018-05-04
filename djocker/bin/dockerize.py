@@ -34,13 +34,6 @@ verbose_name_cache_mapping = OrderedDict([
     ('memcached', 'Memcached'),
 ])
 
-python_versions = [
-    '2.7',
-    '3.4',
-    '3.5',
-    '3.6',
-]
-
 
 def get_database_type(django_settings):
     database_mapping = {
@@ -299,14 +292,30 @@ class Dockerize(cli.Command):
         print("{}".format(color(requirements_files_string, Colors.HEADER)))
         return requirements_files
 
-    def _get_python_version(self):
+    def _get_python_version(self, supported_python_versions):
+        if not supported_python_versions:
+            print(
+                color("Python is currently not supported by the docker image handler", Colors.WARNING)
+            )
+            return None
+        supported_python_versions = sorted(supported_python_versions)
+
         version_info = sys.version_info
         running_python_version = "{}.{}".format(version_info[0], version_info[1])
+        default_choice = running_python_version
+
+        if running_python_version not in supported_python_versions:
+            print(color(
+                "Note that the version ({}) you are currently running is not supported by the Dockerize right now".format(
+                    running_python_version),
+                Colors.WARNING))
+
+            default_choice = supported_python_versions[-1]
 
         return ask(
             question='Which version of Python is the project using?',
-            default=running_python_version,
-            choices=python_versions,
+            default=default_choice,
+            choices=supported_python_versions,
         )
 
     def _get_application_server(self):
@@ -362,9 +371,9 @@ class Dockerize(cli.Command):
                 color("Sorry, 'dockerize' does not currently support '{}' as a base OS".format(config.operating_system),
                       Colors.FAIL))
             sys.exit(1)
-        os_image_handler = OS_IMAGE_HANDLERS[config.operating_system]
+        os_image_handler = OS_IMAGE_HANDLERS[config.operating_system](config)
 
-        config.python_version = self._get_python_version()
+        config.python_version = self._get_python_version(os_image_handler.supported_python_versions)
 
         config.database_image, config.database_type = self._get_database_image()
 

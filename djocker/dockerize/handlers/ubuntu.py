@@ -41,6 +41,10 @@ class UbuntuHandler(BaseHandler):
     def python_info(self):
         return python_version_support[self.ubuntu_version][self.config.python_version]
 
+    @property
+    def supported_python_versions(self):
+        return list(python_version_support.get(self.ubuntu_version, {}).keys())
+
     def _validate(self):
         ubuntu_version = self.ubuntu_version
         if ubuntu_version not in supported_ubuntu_versions:

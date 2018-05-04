@@ -18,6 +18,10 @@ class BaseHandler:
         assert self.out_file, 'No out file configured'
         self.template_root = self._get_template_root()
 
+    @property
+    def supported_python_versions(self):
+        return []
+
     def _get_template_root(self):
         current_path = os.path.dirname(os.path.abspath(__file__))
         relative_template_path = '../templates'
