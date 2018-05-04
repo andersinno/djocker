@@ -9,12 +9,6 @@ ENV DEBIAN_FRONTEND noninteractive
 # Make a place to put all of the code
 RUN mkdir /code
 WORKDIR /code
-{% for source in apt_data.sources %}
-RUN echo {{ source }} >> /etc/apt/sources.list
-{% endfor %}
-{% for key in apt_data.deb_keys %}
-RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys {{ key }}
-{% endfor %}
 
 # Install the appropriate Ubuntu packages
 RUN apt-get update && apt-get install -y \
