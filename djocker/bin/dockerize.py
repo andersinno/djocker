@@ -334,7 +334,7 @@ class Dockerize(cli.Command):
         search_dir = base_dir
 
         # Try to guess in which folder the WSGI file is in if Django is enabled
-        if self.django_settings:
+        if self.django_settings and self.django_settings_path:
             search_dir += '/{}'.format(self.django_settings_path.split('.')[0])
 
         # Find all wsgi files
