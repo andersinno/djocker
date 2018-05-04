@@ -51,6 +51,9 @@ RUN {{ python.interpreter }} -m {{ python.pip }} install --no-cache-dir
 ADD docker-entrypoint.sh /entrypoint/
 RUN chmod +x /entrypoint/docker-entrypoint.sh
 
+# Add code
+ADD . /code/
+
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 {% if application_server == 'gunicorn' %}
 CMD ["gunicorn", "{{ wsgi_dot_path }}:application", "--bind 0.0.0.0:80", "--workers 3"]
