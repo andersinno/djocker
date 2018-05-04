@@ -393,5 +393,9 @@ class Dockerize(cli.Command):
         ComposeHandler(config).handle()
 
 
-if __name__ == "__main__":
+def main():
     cli.run_command(Dockerize)
+
+
+if __name__ == "__main__":
+    main()

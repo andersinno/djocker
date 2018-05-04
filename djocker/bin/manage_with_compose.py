@@ -34,5 +34,9 @@ class ManageWithCompose(cli.Command):
         call(command, shell=True)
 
 
-if __name__ == "__main__":
+def main():
     cli.run_command(ManageWithCompose)
+
+
+if __name__ == "__main__":
+    main()
