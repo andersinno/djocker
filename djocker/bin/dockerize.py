@@ -49,6 +49,9 @@ def get_database_type(django_settings):
     }
 
     django_databases = getattr(django_settings, 'DATABASES', [])
+    if not django_databases:
+        return None
+
     num_databases = len(django_databases)
     print("\nChecking for databases in settings... ", end="", flush=True)
 
@@ -70,12 +73,16 @@ def get_database_type(django_settings):
 def get_cache_type(django_settings):
     supported_caches = ['memcached', 'redis']
     caches_setting = getattr(django_settings, 'CACHES', {})
+
+    if not caches_setting:
+        return None
+
     num_caches = len(caches_setting)
     print("\nChecking for caches in settings... ", end="", flush=True)
 
     cache_type = None
-    if not num_caches or num_caches > 1:
-        print(color("mutiple cache setups", Colors.WARNING))
+    if num_caches > 1:
+        print(color("mutiple cache setups found", Colors.WARNING))
         return None
 
     default_cache = caches_setting['default']['BACKEND']
