@@ -210,7 +210,7 @@ class Dockerize(cli.Command):
                 question='What database are you using in production?',
                 default='PostgreSQL',
                 choices=verbose_name_db_mapping,
-                newline=False
+                newline=True
             )
             verbose_db_type = verbose_name_db_mapping.get(database_type)
 
@@ -238,7 +238,7 @@ class Dockerize(cli.Command):
                 question='What cache are you using in production?',
                 default='None',
                 choices=cache_choices,
-                newline=False
+                newline=True
             )
             if cache_type is None:
                 return None, None
