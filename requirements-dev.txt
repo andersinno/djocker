@@ -8,4 +8,4 @@ idna==2.6                 # via requests
 jinja2==2.10
 markupsafe==1.0           # via Jinja2
 requests==2.18.4
-urllib3==1.22             # via requests
+urllib3==1.26.5             # via requests
