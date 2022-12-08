@@ -2,7 +2,7 @@
 #
 #   prequ update
 #
-certifi==2018.4.16        # via requests
+certifi==2022.12.7        # via requests
 chardet==3.0.4            # via requests
 idna==2.6                 # via requests
 jinja2==2.10
